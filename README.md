@@ -50,7 +50,7 @@
 - [Rahul](https://telegram.me/TechifySupport)
 
 ### ☕ BUY ME A COFFEE
-- [PayPal](https://paypal.me/RahulReviews)
+- [PayPal](https://paypal.me/TechifyBots)
 - [UPI](https://TechifyBots.github.io/Donate)
 
 ### 📌 NOTE
