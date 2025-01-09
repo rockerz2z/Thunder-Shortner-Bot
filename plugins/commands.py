@@ -11,7 +11,8 @@ async def start_handler(c, m):
         await db.add_user(m.from_user.id)
         keyboard = InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("Hᴇʟᴩ Mᴇɴᴜ 🔱", callback_data="help")],
+                [InlineKeyboardButton("Hᴇʟᴩ Mᴇɴᴜ 🔱", callback_data="help"),
+                 InlineKeyboardButton("Eᴀʀɴ Mᴏɴᴇʏ ❣️", callback_data="earn_money")],
                 [InlineKeyboardButton("Cʜᴀɴɴᴇʟ 🍩", url="https://telegram.me/R2K_Bots"),
                  InlineKeyboardButton("Rᴇᴘᴏ 🛠", url="https://telegram.me/ProfessorR2k")],
                 [InlineKeyboardButton("Cʟᴏsᴇ ❌", callback_data="delete")]
@@ -24,7 +25,6 @@ async def start_handler(c, m):
         )
     except:
         pass
-
 
 @Client.on_message(filters.command('shortlink') & filters.private)
 async def save_shortlink(c, m):
@@ -39,8 +39,7 @@ async def save_shortlink(c, m):
         await m.reply_text(f"📍 Sʜᴏʀᴛɴᴇʀ Hᴀs Bᴇᴇɴ Sᴇᴛ Sᴜᴄᴄᴇssғᴜʟʟʏ !\n\nSʜᴏʀᴛɴᴇʀ URL - `{await db.get_value('shortner', uid=usr.id)}`\nShortner API - `{await db.get_value('api', uid=usr.id)}`\n ⚡ Uᴘᴅᴀᴛᴇs - @R2K_Bots")
     else:       
         await m.reply_text(f"🌶️ Eʀʀᴏʀ:\n\nYᴏᴜʀ Sʜᴏʀᴛʟɪɴᴋ API or URL Is Iɴᴠᴀʟɪᴅ. Pʟᴇᴀsᴇ Cʜᴇᴄᴋ Aɢᴀɪɴ !")    
-
-
+    
 @Client.on_message(filters.text & filters.private)
 async def shorten_link(_, m):
     txt = m.text
