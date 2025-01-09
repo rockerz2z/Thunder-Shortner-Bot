@@ -11,10 +11,9 @@ async def start_handler(c, m):
         await db.add_user(m.from_user.id)
         keyboard = InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("Hᴇʟᴩ Mᴇɴᴜ 🔱", callback_data="help"),
-                 InlineKeyboardButton("Eᴀʀɴ Mᴏɴᴇʏ ❣️", callback_data="earn_money")],
-                [InlineKeyboardButton("Cʜᴀɴɴᴇʟ 🍩", url="https://telegram.me/TechifyBots"),
-                 InlineKeyboardButton("Rᴇᴘᴏ 🛠", url="https://github.com/TechifyBots/ShortLink")],
+                [InlineKeyboardButton("Hᴇʟᴩ Mᴇɴᴜ 🔱", callback_data="help")],
+                [InlineKeyboardButton("Cʜᴀɴɴᴇʟ 🍩", url="https://telegram.me/R2K_Bots"),
+                 InlineKeyboardButton("Rᴇᴘᴏ 🛠", url="https://telegram.me/ProfessorR2k")],
                 [InlineKeyboardButton("Cʟᴏsᴇ ❌", callback_data="delete")]
             ]
         )
@@ -30,13 +29,13 @@ async def start_handler(c, m):
 async def save_shortlink(c, m):
     if len(m.command) < 3:
         await m.reply_text(
-            "<b>🕊️ Cᴏᴍᴍᴀɴᴅ Iɴᴄᴏᴍᴘʟᴇᴛᴇ :\n\nPᴜᴛ Sʜᴏʀᴛɴᴇʀ URL & API Aʟᴏɴɢ Wɪᴛʜ Tʜᴇ Cᴏᴍᴍᴀɴᴅ .\n\nEx: <code>/shortlink example.com api</code> \n ⚡ Uᴘᴅᴀᴛᴇs - @TechifyBots</b>"
+            "<b>🕊️ Cᴏᴍᴍᴀɴᴅ Iɴᴄᴏᴍᴘʟᴇᴛᴇ :\n\nPᴜᴛ Sʜᴏʀᴛɴᴇʀ URL & API Aʟᴏɴɢ Wɪᴛʜ Tʜᴇ Cᴏᴍᴍᴀɴᴅ .\n\nEx: <code>/shortlink example.com api</code> \n ⚡ Uᴘᴅᴀᴛᴇs - @R2K_Bots</b>"
         )
         return    
     usr = m.from_user
     elg = await save_data((m.command[1].replace("/", "").replace("https:", "").replace("http:", "")), m.command[2], uid=usr.id)
     if elg:
-        await m.reply_text(f"📍 Sʜᴏʀᴛɴᴇʀ Hᴀs Bᴇᴇɴ Sᴇᴛ Sᴜᴄᴄᴇssғᴜʟʟʏ !\n\nSʜᴏʀᴛɴᴇʀ URL - `{await db.get_value('shortner', uid=usr.id)}`\nShortner API - `{await db.get_value('api', uid=usr.id)}`\n ⚡ Uᴘᴅᴀᴛᴇs - @TechifyBots")
+        await m.reply_text(f"📍 Sʜᴏʀᴛɴᴇʀ Hᴀs Bᴇᴇɴ Sᴇᴛ Sᴜᴄᴄᴇssғᴜʟʟʏ !\n\nSʜᴏʀᴛɴᴇʀ URL - `{await db.get_value('shortner', uid=usr.id)}`\nShortner API - `{await db.get_value('api', uid=usr.id)}`\n ⚡ Uᴘᴅᴀᴛᴇs - @R2K_Bots")
     else:       
         await m.reply_text(f"🌶️ Eʀʀᴏʀ:\n\nYᴏᴜʀ Sʜᴏʀᴛʟɪɴᴋ API or URL Is Iɴᴠᴀʟɪᴅ. Pʟᴇᴀsᴇ Cʜᴇᴄᴋ Aɢᴀɪɴ !")    
     
