@@ -35,11 +35,11 @@ async def callback(bot, query):
             ABOUT_TXT.format(me.mention),
             reply_markup=InlineKeyboardMarkup(
                 [
-                    [InlineKeyboardButton("Uᴘᴅᴀᴛᴇs 🙌", url="https://telegram.me/TechifyBots"),
-                     InlineKeyboardButton("Dᴇᴠᴇʟᴏᴘᴇʀ ⚡", url="https://telegram.me/CallOwnerBot")],
+                    [InlineKeyboardButton("Uᴘᴅᴀᴛᴇs 🙌", url="https://telegram.me/R2K_Bots"),
+                     InlineKeyboardButton("Dᴇᴠᴇʟᴏᴘᴇʀ ⚡", url="https://telegram.me/ProfessorR2k")],
                     [InlineKeyboardButton("Hᴇʟᴩ Mᴇɴᴜ ⁂", callback_data="help"),
                      InlineKeyboardButton("Eᴀʀɴ Mᴏɴᴇʏ ♕", callback_data="earn_money")],
-                    [InlineKeyboardButton("Rᴇᴘᴏ 🛠", url="https://github.com/TechifyBots/ShortLink")],
+                    [InlineKeyboardButton("Rᴇᴘᴏ 🛠", url="https://telegram.me/ProfessorR2k")],
                     [InlineKeyboardButton("Bᴀᴄᴋ 𖦹", callback_data="start")]
                 ]
             )
@@ -52,7 +52,7 @@ async def callback(bot, query):
                     [InlineKeyboardButton("Hᴇʟᴩ Mᴇɴᴜ 🙌", callback_data="help"),
                      InlineKeyboardButton("Eᴀʀɴ Mᴏɴᴇʏ 🕊️", callback_data="earn_money")],
                     [InlineKeyboardButton("Bᴀᴄᴋ ✌", callback_data="help"),                     
-                     InlineKeyboardButton("Rᴇᴘᴏ 🛠", url="https://github.com/TechifyBots/ShortLink")]
+                     InlineKeyboardButton("Rᴇᴘᴏ 🛠", url="https://telegram.me/ProfessorR2k")]
                 ]
             )
         )
@@ -82,8 +82,8 @@ async def callback(bot, query):
                 [
                     [InlineKeyboardButton("Hᴇʟᴩ Mᴇɴᴜ", callback_data="help"),
                      InlineKeyboardButton("Eᴀʀɴ Mᴏɴᴇʏ", callback_data="earn_money")],
-                    [InlineKeyboardButton("Cʜᴀɴɴᴇʟ", url=f"https://telegram.me/TechifyBots"),
-                     InlineKeyboardButton("Sᴜᴩᴩᴏʀᴛ", url=f"https://telegram.me/TechifySupport")],
+                    [InlineKeyboardButton("Cʜᴀɴɴᴇʟ", url=f"https://telegram.me/R2K_Bots"),
+                     InlineKeyboardButton("Sᴜᴩᴩᴏʀᴛ", url=f"https://telegram.me/Linkshortner_Support")],
                     [InlineKeyboardButton("Cʟᴏsᴇ ❌", callback_data="delete")]
                 ]
             )
