@@ -19,7 +19,7 @@ ABOUT_TXT = '''<b>╔════❰ ShortLink Convetor ❱═══❍
 ║ ┣ Mʏ ɴᴀᴍᴇ -> {}
 ║ ┣ Mʏ Oᴡɴᴇʀ -> @ProfessorR2K
 ║ ┣ Uᴘᴅᴀᴛᴇꜱ -> @R2K_Bots
-║ ┣ 𝖲ᴜᴘᴘᴏʀᴛ -> @Linkshortner_Support
+║ ┣ 𝖲ᴜᴘᴘᴏʀᴛ -> @ProfessorR2K
 ║ ┣ ๏ Cʜᴇᴄᴋ ʜᴇʟᴘ ᴛᴏ ᴋɴᴏᴡ ᴍᴏʀᴇ.
 ║ ┗━━━━━━━━━❥
 ╚═════❰ @ ❱═════❍</b>'''
