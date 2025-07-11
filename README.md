@@ -1,58 +1,39 @@
-<h1 align="center">
- <b><a href="https://youtu.be/oOOQIYqnz7w" target="/blank">ShortLink</a>
-</h1>
+# 🔗 Telegram ShortLink Bot
 
-<p align="center">🩷 Thanks for Being Here 🩷</p>
+A modern Telegram bot to shorten multiple links — in messages or photo captions — using any custom shortener (via [Shortzy](https://github.com/TechifyBots/shortzy)).
 
+---
 
+### ✨ Features
 
-### 🥰 FEATURES
+- ✅ Convert any link into a short link via your API
+- 🖼️ Supports photo captions
+- 💡 Handles multiple links in one message
+- 🧠 Uses your own shortener + API
+- 📊 Admin-only `/stats` support
+- ☁️ Deploy to Heroku, Railway, Render, etc.
 
-<details><summary>Tap On Me For Bot Features</summary>
+---
 
-- Link To ShortLink
-- All Sites Support
-- Enhanced Ui
-- Simple & Best
-- Custom Url Shortner
-- Deploy on Heroku + Koyeb + Render + Railway.
-- [Developer support](https://telegram.me/TechifySupport) 24x7
-</details>
+### ⚙️ ENV Variables
 
+| Name          | Description                  |
+|---------------|------------------------------|
+| `API_ID`      | Telegram API ID              |
+| `API_HASH`    | Telegram API Hash            |
+| `BOT_TOKEN`   | From BotFather               |
+| `DATABASE_URL`| Mongo URI                    |
+| `BASE_URL`    | For ping/web server          |
+| `ADMIN_ID`    | Your Telegram User ID        |
+| `UPDATES_CHANNEL` | Your updates channel     |
+| `SUPPORT_GROUP`   | Support group username   |
 
-### 🔥 VARIABLES
+---
 
-<details><summary>Tap On Me For Environment Variable</summary>
+### 🛠 Setup
 
-- `API_ID` : Get From [Here](https://youtu.be/RdMY6Lqfi9w)
-- `API_HASH` : Get From [Here](https://youtu.be/RdMY6Lqfi9w)
-- `BOT_TOKEN` : Get From [BotFather](https://youtu.be/aJILCCXfNVM).
-- `BASE_URL` : Your app url
-- `DATABASE_URL` : Mongodb [Database](https://youtu.be/pMJpHoiu1go)
-- `SUPPORT_GROUP` : Your support group username without "@"
-- `UPDATES_CHANNEL` : Your update channel username without "@"
-</details>
-
-### 🥳 CREDIT
-
-<details><summary>Tap On Me For Credit</summary>
-
-
-💝 Credit Goes To [TechifyBots](https://github.com/TechifyBots)
-
-💘 Base Repo Credit [TamilanBotsZ](https://github.com/TamilanBotsZ)
-
-💖 And Thank You So Much To All Who Help In This Journey.
-</details>
-
-### 💕 CONTACT DEVELOPER
-
-- [Rahul](https://telegram.me/TechifySupport)
-
-### ☕ BUY ME A COFFEE
-- [PayPal](https://paypal.me/TechifyBots)
-- [UPI](https://TechifyBots.github.io/Donate)
-
-### 📌 NOTE
-
-𝘊𝘰𝘱𝘺𝘪𝘯𝘨 𝘰𝘳 𝘚𝘦𝘭𝘭𝘪𝘯𝘨 𝘵𝘩𝘪𝘴 𝘳𝘦𝘱𝘰 𝘪𝘴 𝘴𝘵𝘳𝘪𝘤𝘵𝘭𝘺 𝘱𝘳𝘰𝘩𝘪𝘣𝘪𝘵𝘦𝘥.</b>
+```bash
+git clone https://github.com/yourusername/shortlink-bot
+cd shortlink-bot
+pip install -r requirements.txt
+python bot.py
