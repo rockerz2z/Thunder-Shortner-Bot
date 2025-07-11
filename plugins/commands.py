@@ -47,18 +47,17 @@ async def save_shortlink(c, m):
         await m.reply_text("❌ Invalid API or Site URL.")
 
 
-# ✅ NEW: Automatically handle and shorten multiple links in any message
-@Client.on_message(filters.text & filters.private)
+# ✅ NEW: Auto-shortens multiple links in text or caption (photo)
+@Client.on_message((filters.text | filters.photo) & filters.private)
 async def multi_link_shortener(client, message):
     uid = message.from_user.id
-    text = message.text
+    text = message.caption or message.text or ""
 
     # Extract all URLs using regex
     links = re.findall(r'https?://\S+', text)
 
     if not links:
-        await message.reply_text("❌ No valid links found.")
-        return
+        return  # No reply if no valid links are found
 
     result_lines = []
     for link in links:
@@ -68,4 +67,5 @@ async def multi_link_shortener(client, message):
         except Exception:
             result_lines.append(f"❌ Failed: {link}")
 
-    await message.reply_text("\n".join(result_lines))
+    if result_lines:
+        await message.reply_text("\n".join(result_lines))
