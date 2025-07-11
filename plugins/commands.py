@@ -47,31 +47,30 @@ async def save_shortlink(c, m):
         await m.reply_text("❌ Invalid API or Site URL.")
 
 
-# ✅ NEW: Auto-shortens links in both photo caption and text
+# ✅ Final Stable Auto-Shortener (Text & Photo Caption, 1 Reply Only)
 @Client.on_message((filters.text | filters.photo) & filters.private)
 async def multi_link_shortener(client, message):
     uid = message.from_user.id
-    text = message.caption if message.caption else message.text or ""
+    original_text = message.caption if message.caption else message.text or ""
 
-    # Extract all URLs
-    links = re.findall(r'https?://\S+', text)
+    # Extract links
+    links = re.findall(r'https?://\S+', original_text)
     if not links:
         return
 
-    updated_text = text
+    updated_text = original_text
     for link in links:
         try:
             short = await short_link(link, uid)
             updated_text = updated_text.replace(link, short)
         except Exception:
-            continue  # silently skip failed ones
+            pass  # Leave the original link if shortening fails
 
-    # If message has a photo, send photo back with updated caption
+    # Reply once (either with photo or text)
     if message.photo:
         await message.reply_photo(
             photo=message.photo.file_id,
             caption=updated_text
         )
     else:
-        # Plain text reply
         await message.reply_text(updated_text)
