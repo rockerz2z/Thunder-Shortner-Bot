@@ -19,4 +19,23 @@ async def media_caption_handler(client, message: Message):
         photo=message.photo.file_id if message.photo else None,
         video=message.video.file_id if message.video else None,
         document=message.document.file_id if message.document else None,
-        caption=new_capti_
+        caption=new_caption,
+        parse_mode="html"
+    )
+
+# --- Text message handler ---
+@app.on_message(filters.text & ~filters.command(["start", "help"]))
+async def text_message_handler(client, message: Message):
+    original_text = message.text
+    new_text = await shorten_urls_in_text(original_text)
+
+    if new_text != original_text:
+        await message.reply_text(new_text, parse_mode="html")
+
+# --- Start command ---
+@app.on_message(filters.command("start"))
+async def start(client, message):
+    await message.reply_text("👋 Hello! Send me a link, photo with caption, or video with URLs. I'll shorten and return your message with updated links.")
+
+if __name__ == "__main__":
+    app.run()
