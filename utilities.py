@@ -3,7 +3,7 @@ import httpx
 from configs import SHORTENER_API, SHORTENER_DOMAIN
 from logger import LOGGER
 
-url_regex = r'(https?://[^\s]+)'
+url_regex = r"(https?://[^\s]+)"
 
 async def extract_and_shorten_links(text, format_type="mono"):
     try:
@@ -30,6 +30,18 @@ async def extract_and_shorten_links(text, format_type="mono"):
         return text, {}
 
 async def shorten_url(url):
+    """ Try Shortzy first, then TinyURL as fallback """
+    shortzy_result = await try_shortzy(url)
+    if shortzy_result:
+        return shortzy_result
+
+    tiny_result = await try_tinyurl(url)
+    if tiny_result:
+        return tiny_result
+
+    return None  # All failed
+
+async def try_shortzy(url):
     try:
         async with httpx.AsyncClient() as client:
             res = await client.get(
@@ -40,9 +52,20 @@ async def shorten_url(url):
             data = res.json()
             if data.get("status") == "success":
                 return data.get("shortenedUrl") or data.get("short")
-            else:
-                LOGGER.warning(f"Shortener failed for {url}: {data}")
-                return None
     except Exception as e:
-        LOGGER.error(f"Error while shortening {url}: {e}")
-        return None
+        LOGGER.warning(f"[Shortzy] Failed for {url}: {e}")
+    return None
+
+async def try_tinyurl(url):
+    try:
+        async with httpx.AsyncClient() as client:
+            res = await client.get(
+                f"https://tinyurl.com/api-create.php",
+                params={"url": url},
+                timeout=10
+            )
+            if res.status_code == 200:
+                return res.text.strip()
+    except Exception as e:
+        LOGGER.warning(f"[TinyURL] Failed for {url}: {e}")
+    return None
