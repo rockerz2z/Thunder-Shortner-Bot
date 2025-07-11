@@ -1,5 +1,5 @@
 from motor.motor_asyncio import AsyncIOMotorClient
-from configs import *
+from configs import DATABASE_URL
 
 class Database:
 
@@ -24,5 +24,4 @@ class Database:
         user = await self.coll.find_one({'id': uid})
         return user.get(key, None)
 
-
-db = Database(DATABASE_URL, "TechifyBots")
+db = Database(DATABASE_URL, "ShortnerBot")
