@@ -1,36 +1,107 @@
-from pyrogram import Client, filters
+import re
+import httpx
+import logging
 from pyrogram.types import Message
-from utilities import extract_and_shorten_links
-from configs import API_ID, API_HASH, BOT_TOKEN
+from telegraph import Telegraph
+from datetime import datetime
+from pytube import YouTube
+from moviepy.editor import VideoFileClip
+from pymongo import MongoClient
+from configs import (
+    SHORTENER_API,
+    SHORTENER_DOMAIN,
+    TELEGRAPH_ACCESS_TOKEN,
+    DATABASE_URL
+)
 
-bot = Client("ShortLinkBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+logger = logging.getLogger(__name__)
 
+# Setup Telegraph
+telegraph = Telegraph()
+if TELEGRAPH_ACCESS_TOKEN:
+    telegraph.access_token = TELEGRAPH_ACCESS_TOKEN
+else:
+    telegraph.create_account(short_name="ShortLinkBot")
 
-@bot.on_message(filters.private & filters.incoming & ~filters.command(["start", "help", "about"]))
-async def shorten_links(client: Client, message: Message):
-    original_msg = message.text or message.caption
-    if not original_msg:
-        return
+# Setup MongoDB
+client = MongoClient(DATABASE_URL)
+db = client["shortlink_bot"]
+users = db["users"]
 
-    # Replace links only, preserve original format
-    new_text, _ = await extract_and_shorten_links(original_msg, format_type="mono")
-
-    # Reply with same type
-    if message.photo:
-        await message.reply_photo(photo=message.photo.file_id, caption=new_text, parse_mode="HTML")
-    elif message.video:
-        await message.reply_video(video=message.video.file_id, caption=new_text, parse_mode="HTML")
-    elif message.document:
-        await message.reply_document(document=message.document.file_id, caption=new_text, parse_mode="HTML")
-    elif message.audio:
-        await message.reply_audio(audio=message.audio.file_id, caption=new_text, parse_mode="HTML")
-    elif message.voice:
-        await message.reply_voice(voice=message.voice.file_id, caption=new_text, parse_mode="HTML")
-    elif message.animation:
-        await message.reply_animation(animation=message.animation.file_id, caption=new_text, parse_mode="HTML")
-    else:
-        await message.reply_text(new_text, parse_mode="HTML")
+# Regex for all links
+LINK_REGEX = r'https?://[^\s]+'
 
 
-print(">> Bot started.")
-bot.run()
+def get_user_format(user_id):
+    user = users.find_one({"_id": user_id})
+    return user.get("format", "mono") if user else "mono"
+
+
+def set_user_format(user_id, font_format):
+    users.update_one({"_id": user_id}, {"$set": {"format": font_format}}, upsert=True)
+
+
+def apply_format(text, font_format):
+    if font_format == "mono":
+        return "\n".join([f"`{line}`" for line in text.splitlines()])
+    elif font_format == "bold":
+        return "\n".join([f"*{line}*" for line in text.splitlines()])
+    return text
+
+
+async def shorten_link(link: str):
+    # Try Shortzy
+    try:
+        res = httpx.get(
+            f"https://{SHORTENER_DOMAIN}/api",
+            params={"api": SHORTENER_API, "url": link},
+            timeout=10
+        )
+        data = res.json()
+        if data.get("shortenedUrl"):
+            return data["shortenedUrl"]
+    except Exception as e:
+        logger.warning(f"Shortzy failed for {link}: {e}")
+
+    # Fallback to TinyURL
+    try:
+        res = httpx.get("https://tinyurl.com/api-create.php", params={"url": link}, timeout=10)
+        return res.text.strip()
+    except Exception as e:
+        logger.error(f"Fallback shortening failed: {e}")
+        return link
+
+
+async def extract_and_shorten_links(text: str) -> str:
+    links = re.findall(LINK_REGEX, text)
+    if not links:
+        return text
+
+    for link in links:
+        short = await shorten_link(link)
+        text = text.replace(link, short)
+    return text
+
+
+async def handle_image_upload(message: Message) -> str:
+    path = await message.download()
+    try:
+        response = telegraph.upload_file(path)
+        return f"https://telegra.ph{response[0]['src']}"
+    except Exception as e:
+        logger.error(f"Telegraph upload failed: {e}")
+        return ""
+
+
+async def handle_video_preview(message: Message) -> str:
+    path = await message.download()
+    try:
+        clip = VideoFileClip(path)
+        if clip.duration > 30:
+            clip = clip.subclip(0, 30)
+        preview_path = path.replace(".mp4", "_preview.mp4").replace(".mkv", "_preview.mp4")
+        clip.write_videofile(preview_path, codec="libx264", audio_codec="aac")
+        return preview_path
+    except Exception as e:
+        logger.error(f"Video preview failed: {e}")
+        return path
