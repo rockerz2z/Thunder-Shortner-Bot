@@ -1,38 +1,29 @@
-from os import getenv as genv
+✅ Features to Be Added:
+💬 Preserve Original Message Format
 
-API_ID = genv("API_ID", "")
-API_HASH = genv("API_HASH", "")
-BOT_TOKEN = genv("BOT_TOKEN", "")
-BASE_URL = genv("BASE_URL", "")
-DATABASE_URL = genv("DATABASE_URL", "")
-SUPPORT_GROUP = genv("SUPPORT_GROUP", "Any_Url_Support")
-UPDATES_CHANNEL = genv("UPDATES_CHANNEL", "R2K_Bots")
-ADMINS = [int(genv("ADMIN_ID", "123456789"))]  # comma-split if multiple
+If someone sends a photo/video/document with caption → only links will be shortened.
 
-START_TXT = '''<b>👋 Hello {}, I am your personal ShortLink Bot!
+Caption remains untouched except for shortened links.
 
-➤ I can convert any links to short links using your own API.
-➤ Just send me a message or a photo caption containing links.
+🅰️ Font Format Customization
 
-💡 Use the help menu to get started!</b>'''
+Users can choose between mono, bold, plain using /setformat.
 
-HELP_TXT = '''<b>🛠 HOW TO USE
+📹 Video Preview for .mp4 or .mkv
 
-1. Set your API with: /shortlink yoursite.com your_api_key
-2. Send any message with links, and I’ll return the shortened version.
-3. It also works with photos + captions!
+If a video is >30s, generate a trimmed 30s preview and send it back.
 
-💰 You can earn by sharing short links from many providers.
-Use your referral or monetized domain!
+🖼️ Telegraph Upload for Photos
 
-Example:
-<code>/shortlink shrinkme.io abc123xyz</code></b>'''
+If user sends an image, bot will upload it to Telegra.ph and reply with a link.
 
-ABOUT_TXT = '''<b>🤖 Bot Info
+📣 Auto Post to Channel
 
-➤ Name: {}
-➤ Developer: @ProfessorR2k
-➤ Updates: @R2K_Bots
-➤ Support: @Any_Url_Support
+A copy of every processed message will be forwarded to a configured Telegram channel.
 
-✨ Built with Pyrogram, MongoDB, and Shortzy.</b>'''
+🛠️ Clean UI/UX Improvements
+
+Meaningful feedback messages.
+
+Logs errors cleanly in console.
+
