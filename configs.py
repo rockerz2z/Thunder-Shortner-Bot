@@ -4,22 +4,35 @@ API_ID = genv("API_ID", "")
 API_HASH = genv("API_HASH", "")
 BOT_TOKEN = genv("BOT_TOKEN", "")
 BASE_URL = genv("BASE_URL", "")
+DATABASE_URL = genv("DATABASE_URL", "")
 SUPPORT_GROUP = genv("SUPPORT_GROUP", "Any_Url_Support")
 UPDATES_CHANNEL = genv("UPDATES_CHANNEL", "R2K_Bots")
-DATABASE_URL = genv("DATABASE_URL", "")
-START_TXT = '''<b>Hᴇʟʟᴏ {}, I Aᴍ ShortLink Convetor Bot.
-๏ I ᴄᴀɴ Cᴏɴᴠᴇʀᴛ ʏᴏᴜʀ ʟɪɴᴋs ᴛᴏ Sʜᴏʀᴛ ʟɪɴᴋs ᴜsɪɴɢ ʏᴏᴜʀ ᴀᴩɪ.
-๏ ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ Hᴇʟᴩ Mᴇɴᴜ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ɢᴇᴛ ɪɴғᴏʀᴍᴀᴛɪᴏɴ ᴀʙᴏᴜᴛ ᴍʏ ᴄᴏᴍᴍᴀɴᴅs.
-๏ Uᴘᴅᴀᴛᴇs - @R2K_Bots</b>'''
-HELP_TXT = '''Sᴇɴᴅ ᴍᴇ ᴀɴʏ ʟɪɴᴋ ɪ ᴡɪʟʟ ᴄᴏɴᴠᴇʀᴛ ɪᴛ ᴛᴏ sʜᴏʀᴛ ʟɪɴᴋ ᴜsɪɴɢ ʏᴏᴜʀ ᴀᴘɪ
-ʏᴏᴜ ᴄᴀɴ sʜᴀʀᴇ ᴛʜᴀᴛ ʟɪɴᴋ ᴀɴᴅ ᴇᴀʀɴ ᴍᴏɴᴇʏ.
-sᴇɴᴅ /ShortLink ᴛᴏ ᴋɴᴏᴡ ᴍᴏʀᴇ - Uᴘᴅᴀᴛᴇs - @R2K_Bots'''
-ABOUT_TXT = '''<b>╔════❰ ShortLink Convetor ❱═══❍
-║ ┏━━━━━━━━━❥
-║ ┣ Mʏ ɴᴀᴍᴇ -> {}
-║ ┣ Mʏ Oᴡɴᴇʀ -> @ProfessorR2K
-║ ┣ Uᴘᴅᴀᴛᴇꜱ -> @R2K_Bots
-║ ┣ 𝖲ᴜᴘᴘᴏʀᴛ -> @ProfessorR2K
-║ ┣ ๏ Cʜᴇᴄᴋ ʜᴇʟᴘ ᴛᴏ ᴋɴᴏᴡ ᴍᴏʀᴇ.
-║ ┗━━━━━━━━━❥
-╚═════❰ @ ❱═════❍</b>'''
+ADMINS = [int(genv("ADMIN_ID", "123456789"))]  # comma-split if multiple
+
+START_TXT = '''<b>👋 Hello {}, I am your personal ShortLink Bot!
+
+➤ I can convert any links to short links using your own API.
+➤ Just send me a message or a photo caption containing links.
+
+💡 Use the help menu to get started!</b>'''
+
+HELP_TXT = '''<b>🛠 HOW TO USE
+
+1. Set your API with: /shortlink yoursite.com your_api_key
+2. Send any message with links, and I’ll return the shortened version.
+3. It also works with photos + captions!
+
+💰 You can earn by sharing short links from many providers.
+Use your referral or monetized domain!
+
+Example:
+<code>/shortlink shrinkme.io abc123xyz</code></b>'''
+
+ABOUT_TXT = '''<b>🤖 Bot Info
+
+➤ Name: {}
+➤ Developer: @ProfessorR2k
+➤ Updates: @R2K_Bots
+➤ Support: @Any_Url_Support
+
+✨ Built with Pyrogram, MongoDB, and Shortzy.</b>'''
