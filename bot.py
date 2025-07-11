@@ -29,4 +29,5 @@ class ShortnerBot(Client):
         await super().stop()
         logger.info("🛑 Bot stopped")
 
-i
+if __name__ == '__main__':
+    ShortnerBot().run()
