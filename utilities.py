@@ -1,47 +1,48 @@
-from configs import *
-from aiohttp import web
-from shortzy import Shortzy
-import asyncio, logging, aiohttp, traceback
-from database import db
+import re
+import httpx
+from configs import SHORTENER_API, SHORTENER_DOMAIN
+from logger import LOGGER
 
-routes = web.RouteTableDef()
+url_regex = r'(https?://[^\s]+)'
 
-@routes.get("/", allow_head=True)
-async def root_handler(request):
-    return web.json_response("🚀 ShortLink Bot is alive!")
-
-async def web_server():
-    app = web.Application(client_max_size=30000000)
-    app.add_routes(routes)
-    return app
-
-async def ping_server():
-    while True:
-        await asyncio.sleep(600)
-        try:
-            async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=10)
-            ) as session:
-                async with session.get(BASE_URL) as resp:
-                    logging.info(f"✅ Ping success: {resp.status}")
-        except Exception:
-            logging.warning("⚠️ Failed to ping BASE_URL")
-
-async def short_link(link, uid):
-    usite = await db.get_value("shortner", uid)
-    uapi = await db.get_value("api", uid)
-    if not usite or not uapi:
-        raise ValueError("Missing API setup")
-    shortzy = Shortzy(api_key=uapi, base_site=usite)
-    return await shortzy.convert_from_text(link)
-
-async def save_data(tst_url, tst_api, uid):
+async def extract_and_shorten_links(text, format_type="mono"):
     try:
-        shortzy = Shortzy(api_key=tst_api, base_site=tst_url)
-        test = await shortzy.convert("https://telegram.me/" + UPDATES_CHANNEL)
-        if test.startswith("http"):
-            await db.set_shortner(uid, shortner=tst_url, api=tst_api)
-            return True
-    except Exception:
-        pass
-    return False
+        links = re.findall(url_regex, text)
+        if not links:
+            return text, {}
+
+        shortened_map = {}
+        for link in links:
+            short_url = await shorten_url(link)
+            if short_url:
+                if format_type == "bold":
+                    short_url_fmt = f"**{short_url}**"
+                elif format_type == "mono":
+                    short_url_fmt = f"`{short_url}`"
+                else:
+                    short_url_fmt = short_url
+                text = text.replace(link, short_url_fmt)
+                shortened_map[link] = short_url_fmt
+
+        return text, shortened_map
+    except Exception as e:
+        LOGGER.error(f"[extract_and_shorten_links] Error: {e}")
+        return text, {}
+
+async def shorten_url(url):
+    try:
+        async with httpx.AsyncClient() as client:
+            res = await client.get(
+                f"https://{SHORTENER_DOMAIN}/api",
+                params={"api": SHORTENER_API, "url": url},
+                timeout=10
+            )
+            data = res.json()
+            if data.get("status") == "success":
+                return data.get("shortenedUrl") or data.get("short")
+            else:
+                LOGGER.warning(f"Shortener failed for {url}: {data}")
+                return None
+    except Exception as e:
+        LOGGER.error(f"Error while shortening {url}: {e}")
+        return None
