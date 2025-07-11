@@ -1,29 +1,58 @@
-✅ Features to Be Added:
-💬 Preserve Original Message Format
+from os import getenv as genv
 
-If someone sends a photo/video/document with caption → only links will be shortened.
+# Telegram Bot Credentials
+API_ID = int(genv("API_ID", ""))
+API_HASH = genv("API_HASH", "")
+BOT_TOKEN = genv("BOT_TOKEN", "")
 
-Caption remains untouched except for shortened links.
+# Base URL for webhook hosting (if needed)
+BASE_URL = genv("BASE_URL", "")
 
-🅰️ Font Format Customization
+# MongoDB URI
+DATABASE_URL = genv("DATABASE_URL", "")
 
-Users can choose between mono, bold, plain using /setformat.
+# Telegram Support and Updates
+SUPPORT_GROUP = genv("SUPPORT_GROUP", "Any_Url_Support")
+UPDATES_CHANNEL = genv("UPDATES_CHANNEL", "R2K_Bots")
 
-📹 Video Preview for .mp4 or .mkv
+# Admins (comma-separated IDs in ENV)
+ADMINS = [int(i) for i in genv("ADMIN_ID", "123456789").split(",")]
 
-If a video is >30s, generate a trimmed 30s preview and send it back.
+# Shortener Configuration
+SHORTENER_API = genv("SHORTENER_API", "")  # Shortzy API Key
+SHORTENER_DOMAIN = genv("SHORTENER_DOMAIN", "getlinks.in")  # e.g. getlinks.in
 
-🖼️ Telegraph Upload for Photos
+# Telegraph Upload Token (optional)
+TELEGRAPH_ACCESS_TOKEN = genv("TELEGRAPH_ACCESS_TOKEN", "")
 
-If user sends an image, bot will upload it to Telegra.ph and reply with a link.
+# Channel ID for auto-posting results
+CHANNEL_ID = int(genv("CHANNEL_ID", "-1001234567890"))
 
-📣 Auto Post to Channel
+# Default Bot Texts
+START_TXT = '''<b>👋 Hello {}, I am your personal ShortLink Bot!
 
-A copy of every processed message will be forwarded to a configured Telegram channel.
+➤ I can convert any links to short links using your own API.
+➤ Just send me a message or a photo caption containing links.
 
-🛠️ Clean UI/UX Improvements
+💡 Use the help menu to get started!</b>'''
 
-Meaningful feedback messages.
+HELP_TXT = '''<b>🛠 HOW TO USE
 
-Logs errors cleanly in console.
+1. Set your API with: /shortlink yoursite.com your_api_key
+2. Send any message with links, and I’ll return the shortened version.
+3. It also works with photos + captions!
 
+💰 You can earn by sharing short links from many providers.
+Use your referral or monetized domain!
+
+Example:
+<code>/shortlink shrinkme.io abc123xyz</code></b>'''
+
+ABOUT_TXT = '''<b>🤖 Bot Info
+
+➤ Name: {}
+➤ Developer: @ProfessorR2k
+➤ Updates: @R2K_Bots
+➤ Support: @Any_Url_Support
+
+✨ Built with Pyrogram, MongoDB, and Shortzy.</b>'''
