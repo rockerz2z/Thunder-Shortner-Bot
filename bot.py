@@ -19,17 +19,14 @@ class ShortnerBot(Client):
     async def start(self):
         app = web.AppRunner(await web_server())
         await app.setup()
-        ba = "0.0.0.0"
         port = int(os.getenv("PORT", 8080))
-        await web.TCPSite(app, ba, port).start()
+        await web.TCPSite(app, "0.0.0.0", port).start()
         await super().start()
-        logger.info("Bot started successfully")
+        logger.info("✅ Bot started successfully")
         asyncio.create_task(ping_server())
 
     async def stop(self, *args):
         await super().stop()
-        logger.info("Bot stopped")
+        logger.info("🛑 Bot stopped")
 
-
-if __name__ == '__main__':
-    ShortnerBot().run()
+i
