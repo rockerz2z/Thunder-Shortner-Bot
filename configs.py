@@ -8,7 +8,7 @@ CHANNEL_ID = int(genv("CHANNEL_ID", "0"))  # Optional for auto-posting
 
 SUPPORT_GROUP = genv("SUPPORT_GROUP", "Any_Url_Support")
 UPDATES_CHANNEL = genv("UPDATES_CHANNEL", "R2K_Bots")
-ADMINS = [int(i) for i in genv("ADMIN_ID", "123456789").split(",")]
+ADMINS = [int(i) for i in genv("ADMIN_ID", "1078638766").split(",")]
 
 START_TXT = '''<b>👋 Hello {}, I am your personal ShortLink Bot!
 
