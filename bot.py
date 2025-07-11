@@ -1,33 +1,75 @@
-import os, asyncio
-from configs import *
-from aiohttp import web
-from logger import logger
-from pyrogram import Client
-from utilities import web_server, ping_server
+from pyrogram import Client, filters
+from pyrogram.types import Message
+from utilities import extract_and_shorten_links
+from configs import API_ID, API_HASH, BOT_TOKEN, SHORTENER_API, SHORTENER_DOMAIN
+import re
 
-class ShortnerBot(Client):
-    def __init__(self):
-        super().__init__(
-            "shortner_bot",
-            api_id=API_ID,
-            api_hash=API_HASH,
-            bot_token=BOT_TOKEN,
-            plugins=dict(root="plugins"),
-            workers=100
+bot = Client("ShortLinkBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+
+
+@bot.on_message(filters.private & filters.incoming & ~filters.command(["start", "help", "about"]))
+async def shorten_links(client: Client, message: Message):
+    original_msg = message.text or message.caption
+    if not original_msg:
+        return
+
+    # Extract all links
+    urls = re.findall(r'https?://[^\s]+', original_msg)
+    if not urls:
+        return
+
+    # Shorten all URLs
+    try:
+        short_map = await extract_and_shorten_links(urls, SHORTENER_API, SHORTENER_DOMAIN)
+    except Exception as e:
+        await message.reply_text(f"❌ Error shortening links:\n<code>{e}</code>")
+        return
+
+    # Replace only links in the text
+    new_text = original_msg
+    for old_link, new_link in short_map.items():
+        new_text = new_text.replace(old_link, new_link)
+
+    # Detect message type and send back same type
+    if message.photo:
+        await message.reply_photo(
+            photo=message.photo.file_id,
+            caption=new_text,
+            parse_mode="HTML"
         )
+    elif message.video:
+        await message.reply_video(
+            video=message.video.file_id,
+            caption=new_text,
+            parse_mode="HTML"
+        )
+    elif message.document:
+        await message.reply_document(
+            document=message.document.file_id,
+            caption=new_text,
+            parse_mode="HTML"
+        )
+    elif message.audio:
+        await message.reply_audio(
+            audio=message.audio.file_id,
+            caption=new_text,
+            parse_mode="HTML"
+        )
+    elif message.voice:
+        await message.reply_voice(
+            voice=message.voice.file_id,
+            caption=new_text,
+            parse_mode="HTML"
+        )
+    elif message.animation:
+        await message.reply_animation(
+            animation=message.animation.file_id,
+            caption=new_text,
+            parse_mode="HTML"
+        )
+    else:
+        await message.reply_text(new_text, parse_mode="HTML")
 
-    async def start(self):
-        app = web.AppRunner(await web_server())
-        await app.setup()
-        port = int(os.getenv("PORT", 8080))
-        await web.TCPSite(app, "0.0.0.0", port).start()
-        await super().start()
-        logger.info("✅ Bot started successfully")
-        asyncio.create_task(ping_server())
 
-    async def stop(self, *args):
-        await super().stop()
-        logger.info("🛑 Bot stopped")
-
-if __name__ == '__main__':
-    ShortnerBot().run()
+print(">> Bot started. Press Ctrl+C to stop.")
+bot.run()
