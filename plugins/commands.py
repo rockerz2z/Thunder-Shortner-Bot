@@ -6,71 +6,64 @@ from utilities import short_link, save_data
 import re
 
 
-@Client.on_message(filters.command('start') & filters.private)
+@Client.on_message(filters.command("start") & filters.private)
 async def start_handler(c, m):
-    try:
-        await db.add_user(m.from_user.id)
-        keyboard = InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton("Hᴇʟᴩ Mᴇɴᴜ 🔱", callback_data="help"),
-                 InlineKeyboardButton("Eᴀʀɴ Mᴏɴᴇʏ ❣️", callback_data="earn_money")],
-                [InlineKeyboardButton("Cʜᴀɴɴᴇʟ 🍩", url="https://telegram.me/R2K_Bots"),
-                 InlineKeyboardButton("Rᴇᴘᴏ 🛠", url="https://telegram.me/ProfessorR2k")],
-                [InlineKeyboardButton("Cʟᴏsᴇ ❌", callback_data="delete")]
-            ]
-        )
-
-        await m.reply_text(
-            START_TXT.format(m.from_user.mention),
-            reply_markup=keyboard
-        )
-    except:
-        pass
+    await db.add_user(m.from_user.id)
+    keyboard = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("🔱 Help", callback_data="help"),
+             InlineKeyboardButton("💰 Earn", callback_data="earn_money")],
+            [InlineKeyboardButton("📢 Channel", url="https://t.me/" + UPDATES_CHANNEL),
+             InlineKeyboardButton("🛠 Repo", url="https://t.me/ProfessorR2k")],
+            [InlineKeyboardButton("❌ Close", callback_data="delete")]
+        ]
+    )
+    await m.reply_text(
+        START_TXT.format(m.from_user.mention),
+        reply_markup=keyboard
+    )
 
 
-@Client.on_message(filters.command('shortlink') & filters.private)
+@Client.on_message(filters.command("shortlink") & filters.private)
 async def save_shortlink(c, m):
     if len(m.command) < 3:
         await m.reply_text(
-            "<b>🕊️ Cᴏᴍᴍᴀɴᴅ Iɴᴄᴏᴍᴘʟᴇᴛᴇ :\n\nPᴜᴛ Sʜᴏʀᴛɴᴇʀ URL & API Aʟᴏɴɢ Wɪᴛʜ Tʜᴇ Cᴏᴍᴍᴀɴᴅ .\n\nEx: <code>/shortlink example.com api</code> \n ⚡ Uᴘᴅᴀᴛᴇs - @R2K_Bots</b>"
+            "❌ <b>Invalid format.</b>\nUse:\n<code>/shortlink domain.com API_KEY</code>"
         )
         return
-    usr = m.from_user
-    elg = await save_data(
-        (m.command[1].replace("/", "").replace("https:", "").replace("http:", "")),
-        m.command[2],
-        uid=usr.id
-    )
-    if elg:
-        await m.reply_text("✅ Shortner set successfully.")
+    url = m.command[1].replace("https://", "").replace("http://", "").strip()
+    api = m.command[2].strip()
+    success = await save_data(url, api, uid=m.from_user.id)
+    if success:
+        await m.reply_text("✅ Shortener saved successfully.")
     else:
-        await m.reply_text("❌ Invalid API or Site URL.")
+        await m.reply_text("❌ Failed to validate shortener or API.")
 
 
-# ✅ Final Stable Auto-Shortener (Text & Photo Caption, 1 Reply Only)
-@Client.on_message((filters.text | filters.photo) & filters.private)
-async def multi_link_shortener(client, message):
-    uid = message.from_user.id
-    original_text = message.caption if message.caption else message.text or ""
+@Client.on_message(filters.command("stats") & filters.user(ADMINS))
+async def stats_handler(c, m):
+    total = await db.total_users()
+    await m.reply_text(f"👥 Total Users: <b>{total}</b>")
 
-    # Extract links
-    links = re.findall(r'https?://\S+', original_text)
+
+@Client.on_message(filters.private & (filters.text | (filters.photo & filters.caption)))
+async def auto_shortener(c, m):
+    uid = m.from_user.id
+    text = m.caption if m.caption else m.text or ""
+
+    links = re.findall(r'https?://\S+', text)
     if not links:
         return
 
-    updated_text = original_text
+    updated = text
     for link in links:
         try:
             short = await short_link(link, uid)
-            updated_text = updated_text.replace(link, short)
-        except Exception:
-            pass  # Leave the original link if shortening fails
+            updated = updated.replace(link, short)
+        except:
+            pass  # ignore failure
 
-    # Reply once (either with photo or text)
-    if message.photo:
-        await message.reply_photo(
-            photo=message.photo.file_id,
-            caption=updated_text
-        )
+    if m.photo:
+        await m.reply_photo(m.photo.file_id, caption=updated)
     else:
-        await message.reply_text(updated_text)
+        await m.reply_text(updated)
