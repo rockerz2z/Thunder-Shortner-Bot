@@ -32,4 +32,10 @@ class Database:
         user = await self.coll.find_one({'id': uid})
         return user.get(key, None)
 
-    async def set_format(self, uid, fmt)_
+    async def set_format(self, uid, fmt):
+        await self.coll.update_one({'id': uid}, {'$set': {'format': fmt}})
+
+    async def set_caption(self, uid, caption):
+        await self.coll.update_one({'id': uid}, {'$set': {'caption': caption}})
+        
+db = Database(DATABASE_URL, "ShortnerBot")
